@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>見積書フォーム</title>
+
+    <!-- ✅ LIFF SDK を「defer」属性付きで確実にロード -->
+    <script src="https://static.line-scdn.net/liff/2.22.0/sdk.js" defer></script>
+</head>
+<body>
+    <h2>見積書を作成</h2>
+    <form id="quoteForm">
+        <label>お客さんの名前:</label>
+        <input type="text" id="customerName" required><br>
+        <label>商品名:</label>
+        <input type="text" id="product" required><br>
+        <label>数量:</label>
+        <input type="number" id="quantity" required><br>
+        <label>単価:</label>
+        <input type="number" id="price" required><br>
+        <button type="submit">送信</button>
+    </form>
+
+    <script>
+        // ✅ 設定（LIFF ID & GAS URL）
+        const LIFF_ID = "2007033587-xop7ZewE"; // 🔹 あなたの LIFF ID
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyZ2p9nLfhLzo283xXW1-ISgiuYb4NHoPhbsgt3dtyX8Lj88d68R0yIdUcNA9bQMfY/exec"; // 🔹 あなたの GAS URL
+
+        // ✅ LIFF の初期化（スクリプトのロードを待ってから実行）
+        document.addEventListener("DOMContentLoaded", function () {
+            if (typeof liff === "undefined") {
+                console.error("❌ LIFF SDK がロードされていません。");
+                return;
+            }
+
+            liff.init({ liffId: LIFF_ID })
+                .then(() => {
+                    console.log("✅ LIFF 初期化成功");
+
+                    // 🔹 ログインしていなければログイン
+                    if (!liff.isLoggedIn()) {
+                        liff.login();
+                    }
+                })
+                .catch(error => {
+                    console.error("❌ LIFF の初期化エラー:", error);
+                });
+        });
+
+        // ✅ フォーム送信処理
+        document.getElementById("quoteForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // 🔹 フォームデータ取得
+            var data = {
+                customerName: document.getElementById("customerName").value,
+                product: document.getElementById("product").value,
+                quantity: document.getElementById("quantity").value,
+                price: document.getElementById("price").value
+            };
+
+            // 🔹 GAS にデータを送信
+            fetch(GAS_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.status === "success") {
+                    alert("✅ 見積もりが保存されました！");
+                } else {
+                    alert("❌ データ送信に失敗しました: " + result.message);
+                }
+            })
+            .catch(error => {
+                console.error("❌ 送信エラー:", error);
+                alert("❌ 送信エラーが発生しました！");
+            });
+        });
+    </script>
+</body>
+</html>
