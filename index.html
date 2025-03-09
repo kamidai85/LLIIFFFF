@@ -24,7 +24,7 @@
     <script>
         // ✅ LIFF ID & GAS URL 設定
         const LIFF_ID = "2007033587-xop7ZewE"; // あなたの LIFF ID
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyeQiirakj2gLnzq1SlDhxw05ibvbs-nZSR4hMqYrTurHMN5KFhL3hR1nP2o7JZHVU/exec"; // 最新のGAS URLに置き換える
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbyPIMPwG9YwHJ7-qK7h0FuqxPJeIeLT0B677-3mtz3jg_QBjE0cqn5vLTFq539fP8E/exec"; // 最新のGAS URLに更新
 
         // ✅ LIFF の初期化
         async function initLIFF() {
@@ -32,7 +32,6 @@
                 await liff.init({ liffId: LIFF_ID });
                 console.log("✅ LIFF 初期化成功");
 
-                // 🔹 ログインしていなければログイン
                 if (!liff.isLoggedIn()) {
                     liff.login();
                 }
@@ -41,7 +40,7 @@
             }
         }
 
-        // ✅ ページが完全に読み込まれてから LIFF を初期化
+        // ✅ ページロード後に LIFF を初期化
         document.addEventListener("DOMContentLoaded", function () {
             if (typeof liff === "undefined") {
                 console.error("❌ LIFF SDK がロードされていません。");
@@ -54,7 +53,6 @@
         document.getElementById("quoteForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
-            // 🔹 フォームデータ取得（スペルミス修正済み）
             var data = {
                 customerName: document.getElementById("customerName").value,
                 product: document.getElementById("product").value,
@@ -62,7 +60,9 @@
                 price: document.getElementById("price").value
             };
 
-            // 🔹 GAS にデータを送信
+            // ✅ デバッグログ
+            console.log("📤 送信データ:", data);
+
             fetch(GAS_URL, {
                 method: "POST",
                 headers: {
@@ -72,6 +72,7 @@
             })
             .then(response => response.json())
             .then(result => {
+                console.log("📥 受信データ:", result);
                 if (result.status === "success") {
                     alert("✅ 見積もりが保存されました！");
                 } else {
