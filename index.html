@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見積書フォーム</title>
-    <!-- ✅ LIFF SDK を確実に読み込む -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
@@ -22,16 +21,13 @@
     </form>
 
     <script>
-        // ✅ LIFF ID & GAS URL 設定
-        const LIFF_ID = "2007033587-xop7ZewE"; // あなたの LIFF ID
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyPIMPwG9YwHJ7-qK7h0FuqxPJeIeLT0B677-3mtz3jg_QBjE0cqn5vLTFq539fP8E/exec"; // 最新のGAS URLに更新
+        const LIFF_ID = "2007033587-xop7ZewE";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzSsc0nwkHefSqInVls-YKUYA0YGnaI6wWmu8LcD8gVRPat1RX6NBvQnxpPnArr7V8/exec";
 
-        // ✅ LIFF の初期化
         async function initLIFF() {
             try {
                 await liff.init({ liffId: LIFF_ID });
                 console.log("✅ LIFF 初期化成功");
-
                 if (!liff.isLoggedIn()) {
                     liff.login();
                 }
@@ -40,7 +36,6 @@
             }
         }
 
-        // ✅ ページロード後に LIFF を初期化
         document.addEventListener("DOMContentLoaded", function () {
             if (typeof liff === "undefined") {
                 console.error("❌ LIFF SDK がロードされていません。");
@@ -49,7 +44,6 @@
             initLIFF();
         });
 
-        // ✅ フォーム送信処理
         document.getElementById("quoteForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
@@ -60,7 +54,6 @@
                 price: document.getElementById("price").value
             };
 
-            // ✅ デバッグログ
             console.log("📤 送信データ:", data);
 
             fetch(GAS_URL, {
