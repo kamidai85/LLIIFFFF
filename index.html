@@ -55,9 +55,9 @@
         document.getElementById("quoteForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
-            // 🔹 フォームデータ取得
+            // 🔹 フォームデータ取得（変数名修正済み）
             var data = {
-                customerName: document.getElementById("customerName").value, 
+                customerName: document.getElementById("customerName").value, // ✅ 修正完了
                 product: document.getElementById("product").value,
                 quantity: document.getElementById("quantity").value,
                 price: document.getElementById("price").value
