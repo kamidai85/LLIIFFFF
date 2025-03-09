@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見積書フォーム</title>
 
-    <!-- ✅ LIFF SDK を head 内で確実にロード -->
-    <script src="https://static.line-scdn.net/liff/2.22.0/sdk.js" defer></script>
+    <!-- ✅ 確実にLIFF SDKを読み込む -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
     <h2>見積書を作成</h2>
@@ -25,30 +25,27 @@
     <script>
         // ✅ LIFF ID & GAS URL 設定
         const LIFF_ID = "2007033587-xop7ZewE"; // あなたの LIFF ID
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwsn7YNLEMQCJooT-tXLoxaUX6217Dj60zTQ8MaPkkys6LOOCAgLY-HmDEfkG32ZSE/exec"; // ここに最新のGASデプロイURLを入れる
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwsn7YNLEMQCJooT-tXLoxaUX6217Dj60zTQ8MaPkkys6LOOCAgLY-HmDEfkG32ZSE/exec"; // あなたのGAS URL
 
-        // ✅ LIFF の初期化
-        async function initLIFF() {
-            try {
-                await liff.init({ liffId: LIFF_ID });
-                console.log("✅ LIFF 初期化成功");
-
-                // 🔹 ログインしていなければログイン
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                }
-            } catch (error) {
-                console.error("❌ LIFF の初期化エラー:", error);
-            }
-        }
-
-        // ✅ ページが完全に読み込まれてから LIFF を初期化
+        // ✅ ページ読み込み後にLIFFを確実に初期化
         document.addEventListener("DOMContentLoaded", function () {
             if (typeof liff === "undefined") {
                 console.error("❌ LIFF SDK がロードされていません。");
                 return;
             }
-            initLIFF();
+
+            liff.init({ liffId: LIFF_ID })
+                .then(() => {
+                    console.log("✅ LIFF 初期化成功");
+
+                    // 🔹 ログインしていなければログイン
+                    if (!liff.isLoggedIn()) {
+                        liff.login();
+                    }
+                })
+                .catch(error => {
+                    console.error("❌ LIFF の初期化エラー:", error);
+                });
         });
 
         // ✅ フォーム送信処理
