@@ -1,89 +1,32 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>見積書フォーム</title>
+function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.openById("1-0Rfs7YoPuVdiMUa9u4bruUXVfowwIdsNh-dgR0RDH8").getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
 
-    <!-- ✅ LIFF SDK を head 内でロード -->
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-</head>
-<body>
-    <h2>見積書を作成</h2>
-    <form id="quoteForm">
-        <label>お客さんの名前:</label>
-        <input type="text" id="customerName" required><br>
-        <label>商品名:</label>
-        <input type="text" id="product" required><br>
-        <label>数量:</label>
-        <input type="number" id="quantity" required><br>
-        <label>単価:</label>
-        <input type="number" id="price" required><br>
-        <button type="submit">送信</button>
-    </form>
+    Logger.log("受け取ったデータ: " + JSON.stringify(data));
 
-    <script>
-        // ✅ LIFF ID & GAS URL 設定
-        const LIFF_ID = "2007033587-xop7ZewE"; // あなたの LIFF ID
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbw1YQmwhIMms0A2tRMCiJbINtBA3542y7vOnyg8-t6RlGGJhfhbA-kgWXKS6vNkNos/exec"; // あなたのGASのURL
+    sheet.appendRow([
+      new Date(),
+      data.customerName,
+      data.product,
+      data.quantity,
+      data.price,
+      data.quantity * data.price
+    ]);
 
-        // ✅ LIFF の初期化
-        async function initLIFF() {
-            try {
-                await liff.init({ liffId: LIFF_ID });
-                console.log("✅ LIFF 初期化成功");
+    // ✅ CORS対応のヘッダーを追加
+    var output = ContentService.createTextOutput(JSON.stringify({ status: "success" }))
+      .setMimeType(ContentService.MimeType.JSON);
 
-                // 🔹 ログインしていなければログイン
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                }
-            } catch (error) {
-                console.error("❌ LIFF の初期化エラー:", error);
-            }
-        }
+    return output.setHeaders({
+      "Access-Control-Allow-Origin": "*", 
+      "Access-Control-Allow-Methods": "POST",
+      "Access-Control-Allow-Headers": "Content-Type"
+    });
 
-        // ✅ ページが完全に読み込まれてから LIFF を初期化
-        document.addEventListener("DOMContentLoaded", function () {
-            if (typeof liff === "undefined") {
-                console.error("❌ LIFF SDK がロードされていません。");
-                return;
-            }
-            initLIFF();
-        });
-
-        // ✅ フォーム送信処理
-        document.getElementById("quoteForm").addEventListener("submit", function (event) {
-            event.preventDefault();
-
-            // 🔹 フォームデータ取得（変数名修正済み）
-            var data = {
-                customerName: document.getElementById("customerName").value, // ✅ 修正完了
-                product: document.getElementById("product").value,
-                quantity: document.getElementById("quantity").value,
-                price: document.getElementById("price").value
-            };
-
-            // 🔹 GAS にデータを送信
-            fetch(GAS_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(result => {
-                if (result.status === "success") {
-                    alert("✅ 見積もりが保存されました！");
-                } else {
-                    alert("❌ データ送信に失敗しました: " + result.message);
-                }
-            })
-            .catch(error => {
-                console.error("❌ 送信エラー:", error);
-                alert("❌ 送信エラーが発生しました！");
-            });
-        });
-    </script>
-</body>
-</html>
+  } catch (error) {
+    Logger.log("エラー: " + error);
+    return ContentService.createTextOutput(JSON.stringify({ status: "error", message: error.toString() }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
