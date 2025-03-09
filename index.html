@@ -4,9 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見積書フォーム</title>
-
-    <!-- ✅ LIFF SDK を head 内で確実にロード -->
-   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <!-- ✅ LIFF SDK を確実に読み込む -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
     <h2>見積書を作成</h2>
@@ -25,7 +24,7 @@
     <script>
         // ✅ LIFF ID & GAS URL 設定
         const LIFF_ID = "2007033587-xop7ZewE"; // あなたの LIFF ID
-        const GAS_URL = "https://script.google.com/macros/s/AKfycby8XJ9r8wsYg_OjMzUxO6AoSQJps3u-ey6kXV-KacO4kmP79ibk08q8O-atZTFsjAA/exec"; // ここに最新のGASデプロイURLを入れる
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwXYZ1234567890/exec"; // 最新のGAS URLに置き換える
 
         // ✅ LIFF の初期化
         async function initLIFF() {
@@ -55,10 +54,9 @@
         document.getElementById("quoteForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
-            // 🔹 フォームデータ取得
+            // 🔹 フォームデータ取得（スペルミス修正済み）
             var data = {
-                cust
-                omerName: document.getElementById("customerName").value,
+                customerName: document.getElementById("customerName").value,
                 product: document.getElementById("product").value,
                 quantity: document.getElementById("quantity").value,
                 price: document.getElementById("price").value
