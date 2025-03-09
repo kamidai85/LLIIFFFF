@@ -22,58 +22,43 @@
 
     <script>
         const LIFF_ID = "2007033587-xop7ZewE";
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbw5-ee-yPz3JsIX5rPUeNGtwHIj5C--_jzwBFIVGcJawUcmUZggG4Lg9dVnEWqhBr0/exec";
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxb2G3YXzl0Wky74Z6W5G4WFn1Q7Im4K0v7UEi-qgEq1WnbGsKGG6IQVqXuNw0v1M0/exec";
 
         async function initLIFF() {
             try {
                 await liff.init({ liffId: LIFF_ID });
-                console.log("✅ LIFF 初期化成功");
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                }
+                if (!liff.isLoggedIn()) liff.login();
             } catch (error) {
-                console.error("❌ LIFF の初期化エラー:", error);
+                console.error("LIFF 初期化エラー:", error);
             }
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            if (typeof liff === "undefined") {
-                console.error("❌ LIFF SDK がロードされていません。");
-                return;
-            }
-            initLIFF();
-        });
+        document.addEventListener("DOMContentLoaded", initLIFF);
 
         document.getElementById("quoteForm").addEventListener("submit", function (event) {
             event.preventDefault();
 
-            var data = {
-                customerName: document.getElementById("customerName").value,
-                product: document.getElementById("product").value,
-                quantity: document.getElementById("quantity").value,
-                price: document.getElementById("price").value
-            };
-
-            console.log("📤 送信データ:", data);
+            const formData = new URLSearchParams();
+            formData.append("customerName", document.getElementById("customerName").value);
+            formData.append("product", document.getElementById("product").value);
+            formData.append("quantity", document.getElementById("quantity").value);
+            formData.append("price", document.getElementById("price").value);
 
             fetch(GAS_URL, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(data)
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: formData
             })
             .then(response => response.json())
             .then(result => {
-                console.log("📥 受信データ:", result);
                 if (result.status === "success") {
                     alert("✅ 見積もりが保存されました！");
                 } else {
-                    alert("❌ データ送信に失敗しました: " + result.message);
+                    alert("❌ 送信エラー: " + result.message);
                 }
             })
             .catch(error => {
-                console.error("❌ 送信エラー:", error);
+                console.error("送信エラー:", error);
                 alert("❌ 送信エラーが発生しました！");
             });
         });
