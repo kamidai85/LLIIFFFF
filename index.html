@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>見積書フォーム</title>
 
-    <!-- ✅ LIFF SDK の正しいロード -->
+    <!-- ✅ LIFF SDK を確実にロード -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body>
@@ -42,7 +42,7 @@
             }
         }
 
-        // ✅ LIFF SDK のロードを確実にする
+        // ✅ ページが完全に読み込まれてから LIFF を初期化
         document.addEventListener("DOMContentLoaded", function () {
             if (typeof liff === "undefined") {
                 console.error("❌ LIFF SDK がロードされていません。");
@@ -87,4 +87,3 @@
     </script>
 </body>
 </html>
-
